@@ -7,6 +7,9 @@ from django.views.decorators.csrf import csrf_protect as csrf_protect
 from django.contrib.auth import login, authenticate, logout
 from django.core.exceptions import ObjectDoesNotExist
 
+# Added by hr2340
+from django.utils import html
+
 SALT_LEN = 16
 
 # Create your views here.
@@ -144,7 +147,8 @@ def gift_card_view(request, prod_num=0):
             user_account = User.objects.get(username=target_user)
         except:
             # Compliance requires us to show the invalid username for some reason.
-            return HttpResponse("ERROR: " + target_user + " IS NOT A VALID RECIPIENT.")
+            # return HttpResponse("ERROR: " + target_user + " IS NOT A VALID RECIPIENT.")
+            return HttpResponse("ERROR: " + html.escape(target_user) + " IS NOT A VALID RECIPIENT.")
             user_account = None
         if user_account is None:
             context['user'] = None
