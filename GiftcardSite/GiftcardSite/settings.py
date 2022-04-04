@@ -26,6 +26,9 @@ SECRET_KEY = 'kmgysa#fz+9(z1*=c0ydrjizk*7sthm2ga1z4=^61$cxcq8b$l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+FIELD_ENCRYPTION_KEY = 'mS2Op7rDRYOYFHgK64GaziOquh8aLfa4f2pfTGoG1uU='
+
+
 ALLOWED_HOSTS = []
 
 
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Custom
+    'encrypted_model_fields',
     'LegacySite',
 ]
 

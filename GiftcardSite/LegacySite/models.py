@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.backends import BaseBackend
 from . import extras
+from encrypted_model_fields.fields import *
 
 # Create your models here.
 class User(AbstractBaseUser):
@@ -37,9 +38,12 @@ class Product(models.Model):
 
 class Card(models.Model):
     id = models.AutoField(primary_key=True)
-    data = models.BinaryField(unique=True)
+    # data = models.BinaryField(unique=True)
+    data = EncryptedCharField(unique=True, max_length=100)
     product = models.ForeignKey('LegacySite.Product', on_delete=models.CASCADE, default=None)
-    amount = models.IntegerField()
-    fp = models.CharField(max_length=100, unique=True)
+    # amount = models.IntegerField()
+    amount = EncryptedIntegerField()
+    # fp = models.CharField(max_length=100, unique=True)
+    fp = EncryptedCharField(max_length=100, unique=True)
     user = models.ForeignKey('LegacySite.User', on_delete=models.CASCADE)
     used = models.BooleanField(default=False)

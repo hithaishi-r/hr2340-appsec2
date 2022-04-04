@@ -142,3 +142,27 @@ In this task we need to show that the vulnerability is mitigated with the help o
 # Part 2: Automated Regression & Database Encryption
 
 ## Task 5 (10pts): Continuous Integration and Development
+In this task we have created ```hr2340-regression.yml``` file which will be used by github actions. Whenever a push is made on the repository, this yml file will trigger github actions to run all the testcases that we have created for each of the previous tasks. The yml file is shown below.
+![task5-1](Artifacts/task5_1.png)
+
+
+We can see in the below output that all our tests have passed.
+![task5-2](Artifacts/task5_2.png)
+
+
+## Task 6 (18pts): Encrypting the Database
+
+### Task 6a
+To encrypt the database, we install django-encrypted-model-fields via ```python3 -m pip install django-encrypted-model-fields```. We generate a secret key using the file ```hr2340-secretkey.py```. Then we use the key in the ```settings.py``` file.
+![task6a-1](Artifacts/task6a_1.png)
+
+
+We then modify the ```models.py``` file to encrypt the data of the card model to be stored in the database.
+![task6a-2](Artifacts/task6a_2.png)
+
+
+After this to check if this is working, we buy a gift card. We can see that the data has been encrypted in the database. The screenshot below shows it.
+![task6a-3](Artifacts/task6a_3.png)
+
+
+One of the potential risks of performing the above mentioned encryption is that if the encryption key is leaked, then it is very easy to steal the data which violates CIA principles.
