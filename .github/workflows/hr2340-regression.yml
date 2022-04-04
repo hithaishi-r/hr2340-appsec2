@@ -9,6 +9,7 @@ jobs:
      run: |
       sudo pip install django
       cd GiftcardSite
+      sudo pip install django-encrypted-model-fields
       sudo nohup python3 manage.py runserver 80 > server.out &
    - name: test for xss vulnerability
      run: python3 ./hr2340-xss.py
