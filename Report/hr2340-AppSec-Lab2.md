@@ -166,3 +166,8 @@ After this to check if this is working, we buy a gift card. We can see that the 
 
 
 One of the potential risks of performing the above mentioned encryption is that if the encryption key is leaked, then it is very easy to steal the data which violates CIA principles.
+
+### Task 6b
+For the rotation we first dump the database to a json file. Then we generate a new key and add it in settings.py file like we did in the prvious task.
+Now we load the database json again. We can now see that all our data from the old db has been encrypted using the new key. The screenshot below shows it.
+![task6b](Artifacts/task6b.png)
