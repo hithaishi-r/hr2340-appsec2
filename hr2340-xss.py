@@ -9,7 +9,9 @@ credentials = { "uname" : "hitha" , "pword" : "nyuappsec", }
 request1 = session.post("http://127.0.0.1/login", data = credentials)
 
 # Making sessionid cookie non-secure
-list(session.cookies)[0].secure = False
+for cookie in session.cookies:
+    if cookie.name == "sessionid":
+        cookie.secure = False
 
 # Sending malicious string in POST request
 bad_string = "<script>alert('hitha')</script>"
