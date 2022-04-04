@@ -1,3 +1,4 @@
+from asyncio import subprocess
 import json
 from binascii import hexlify
 from hashlib import sha256
@@ -55,7 +56,17 @@ def parse_card_data(card_file_data, card_path_name):
             card_file.write(card_file_data)
     except:
         pass
-    ret_val = system(f"./{CARD_PARSER} 2 {card_path_name} > tmp_file")
+    # ret_val = system(f"./{CARD_PARSER} 2 {card_path_name} > tmp_file")
+    # Mitigation of CMDi vulnerability
+    value = subprocess.run(["./" + CARD_PARSER, "2", card_path_name])
+    try:
+        details = value.stdout.decode()
+    except:
+        details = ""
+    with open("tmp_file", "w") as tmp_file:
+        tmp_file.write(details)
+    ret_val = value.returncode
+
     if ret_val != 0:
         return card_file_data
     with open("tmp_file", 'r') as tmp_file:

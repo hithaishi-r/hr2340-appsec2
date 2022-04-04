@@ -94,6 +94,7 @@
                         <input type="hidden" name="card_id" id="card_id" value="{{ card_item.id }}"/>
                         
                         <button class="btn btn-bid" type="submit">Use This Card</a>
+                        {% csrf_token %}
                         </form>
                       </div>
 
@@ -117,6 +118,7 @@
                         <input type="test" name="card_fname" id="card_fname" placeholder="NameYourCard">
                         
                         <button class="btn btn-bid" type="submit">Submit a Card</button>
+                        {% csrf_token %}
                         </form>
                       </div>
 
