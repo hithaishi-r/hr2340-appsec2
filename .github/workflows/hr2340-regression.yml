@@ -11,10 +11,10 @@ jobs:
       cd GiftcardSite
       sudo nohup python3 manage.py runserver 80 > server.out &
     - name: test for xss vulnerability
-      run: python3 hr2340-xss.py
+      run: ./python3 hr2340-xss.py
     - name: test for csrf vulnerability
-      run: python3 hr2340-csrf.py
+      run: ./python3 hr2340-csrf.py
     - name: test for sqli vulnerability
-      run: python3 hr2340-sqli.py
+      run: ./python3 hr2340-sqli.py
     - name: test for cmdi vulnerability
-      run: python3 hr2340-cmdi.py
+      run: ./python3 hr2340-cmdi.py
